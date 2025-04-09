@@ -66,10 +66,10 @@ class IndexTTS:
         # chinese_punctuation = "，。！？；：“”‘’（）【】《》"
         # english_punctuation = ",.!?;:\"\"''()[]<>"
         #
-        # # 创建一个映射字典
+        # # Create a mapping dictionary
         # punctuation_map = str.maketrans(chinese_punctuation, english_punctuation)
 
-        # 使用translate方法替换标点符号
+        # Replacing punctuation marks using the translate method
         # return text.translate(punctuation_map)
         return self.normalizer.infer(text)
 
@@ -249,7 +249,7 @@ class IndexTTS:
 
 if __name__ == "__main__":
     prompt_wav="test_data/input.wav"
-    #text="晕 XUAN4 是 一 种 GAN3 觉"
-    text='大家好，我现在正在bilibili 体验 ai 科技，说实话，来之前我绝对想不到！AI技术已经发展到这样匪夷所思的地步了！'
+    #text="Halo XUAN4 is a GAN3 sense."
+    text="Hello everyone, I'm at bilibili right now experiencing ai technology, honestly, before coming here I would never have thought that AI technology has developed to such an unbelievable point!"
     tts = IndexTTS(cfg_path="checkpoints/config.yaml", model_dir="checkpoints", is_fp16=True)
     tts.infer(audio_prompt=prompt_wav, text=text, output_path="gen.wav")

@@ -45,7 +45,7 @@ class TextNormalizer:
         }
 
     def match_email(self, email):
-        # 正则表达式匹配邮箱格式：数字英文@数字英文.英文
+        # Regular expression match mailbox format: numeric English @ numeric English.English
         pattern = r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+$'
         return re.match(pattern, email) is not None
 
@@ -139,19 +139,19 @@ class TextNormalizer:
         return pinyin
 
     def restore_pinyin_tone_numbers(self,original_text, processed_text):
-        # 第一步：恢复拼音后的音调数字（1-4）
-        # 建立中文数字到阿拉伯数字的映射
+        # Step 1: Recovering tone numbers after pinyin (1-4)
+        # Create a mapping of Chinese numerals to Arabic numerals
         chinese_to_num = {'一': '1', '二': '2', '三': '3', '四': '4'}
 
-        # 使用正则表达式找到拼音+中文数字的组合（如 "xuan四"）
+        # Use regular expressions to find combinations of pinyin + Chinese numerals (e.g. "xuan si")
         def replace_tone(match):
-            pinyin = match.group(1)  # 拼音部分
-            chinese_num = match.group(2)  # 中文数字部分
-            # 将中文数字转换为阿拉伯数字
+            pinyin = match.group(1)  # phonetic component
+            chinese_num = match.group(2)  # Chinese numerals section
+            # Conversion of Chinese numerals to Arabic numerals
             num = chinese_to_num.get(chinese_num, chinese_num)
             return f"{pinyin}{num}"
 
-        # 匹配拼音后跟中文数字（一、二、三、四）的情况
+        # Match Pinyin followed by Chinese numerals (1, 2, 3, 4)
         pattern = r'([a-zA-Z]+)([一二三四])'
         restored_text = re.sub(pattern, replace_tone, processed_text)
         restored_text = restored_text.lower()
@@ -161,6 +161,6 @@ class TextNormalizer:
 
 
 if __name__ == '__main__':
-    # 测试程序
+    # test program
     text_normalizer = TextNormalizer()
     print(text_normalizer.infer("2.5平方电线"))

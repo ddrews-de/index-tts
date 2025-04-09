@@ -44,18 +44,18 @@ with gr.Blocks() as demo:
 <p align="center">
 <a href='https://arxiv.org/abs/2502.05512'><img src='https://img.shields.io/badge/ArXiv-2502.05512-red'></a>
     ''')
-    with gr.Tab("音频生成"):
+    with gr.Tab("Audio Generation"):
         with gr.Row():
             os.makedirs("prompts",exist_ok=True)
-            prompt_audio = gr.Audio(label="请上传参考音频",key="prompt_audio",
+            prompt_audio = gr.Audio(label="Please upload the reference audio",key="prompt_audio",
                                     sources=["upload","microphone"],type="filepath")
             prompt_list = os.listdir("prompts")
             default = ''
             if prompt_list:
                 default = prompt_list[0]
-            input_text_single = gr.Textbox(label="请输入目标文本",key="input_text_single")
-            gen_button = gr.Button("生成语音",key="gen_button",interactive=True)
-            output_audio = gr.Audio(label="生成结果", visible=False,key="output_audio")
+            input_text_single = gr.Textbox(label="Please enter the target text",key="input_text_single")
+            gen_button = gr.Button("Generate Speech",key="gen_button",interactive=True)
+            output_audio = gr.Audio(label="Generate results", visible=False,key="output_audio")
 
     prompt_audio.upload(update_prompt_audio,
                          inputs=[],

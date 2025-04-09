@@ -5,11 +5,11 @@ import os
 from collections import OrderedDict
 
 I18N_JSON_DIR   : os.PathLike = os.path.join(os.path.dirname(os.path.relpath(__file__)), 'locale')
-DEFAULT_LANGUAGE: str         = "zh_CN" # 默认语言
-TITLE_LEN       : int         = 60      # 标题显示长度
-KEY_LEN         : int         = 30      # 键名显示长度
-SHOW_KEYS       : bool        = False   # 是否显示键信息
-SORT_KEYS       : bool        = False   # 是否按全局键名写入文件
+DEFAULT_LANGUAGE: str         = "en_US" # default language
+TITLE_LEN       : int         = 60      # Title display length
+KEY_LEN         : int         = 30      # Key Name Display Length
+SHOW_KEYS       : bool        = False   # Whether to display key information
+SORT_KEYS       : bool        = False   # Whether to write to a file by global key name
 
 def extract_i18n_strings(node):
     i18n_strings = []
@@ -57,26 +57,26 @@ def scan_i18n_strings():
 def update_i18n_json(json_file, standard_keys):
     standard_keys = sorted(standard_keys)
     print(f" Process {json_file} ".center(TITLE_LEN, "="))
-    # 读取 JSON 文件
+    # Reading JSON files
     with open(json_file, "r", encoding="utf-8") as f:
         json_data = json.load(f, object_pairs_hook=OrderedDict)
-    # 打印处理前的 JSON 条目数
+    # Number of JSON entries before printing
     len_before = len(json_data)
     print(f"{'Total Keys'.ljust(KEY_LEN)}: {len_before}")
-    # 识别缺失的键并补全
+    # Identify missing keys and complete them
     miss_keys = set(standard_keys) - set(json_data.keys())
     if len(miss_keys) > 0:
         print(f"{'Missing Keys (+)'.ljust(KEY_LEN)}: {len(miss_keys)}")
         for key in miss_keys:
             if DEFAULT_LANGUAGE in json_file:
-                # 默认语言的键值相同.
+                # The default language has the same keys.
                 json_data[key] = key
             else:
-                # 其他语言的值设置为 #! + 键名以标注未被翻译.
+                # The value for other languages is set to #! + key names to mark them as untranslated.
                 json_data[key] = "#!" + key
             if SHOW_KEYS:
                 print(f"{'Added Missing Key'.ljust(KEY_LEN)}: {key}")
-    # 识别多余的键并删除
+    # Recognize redundant keys and delete them
     diff_keys = set(json_data.keys()) - set(standard_keys)
     if len(diff_keys) > 0:
         print(f"{'Unused Keys  (-)'.ljust(KEY_LEN)}: {len(diff_keys)}")
@@ -84,7 +84,7 @@ def update_i18n_json(json_file, standard_keys):
             del json_data[key]
             if SHOW_KEYS:
                 print(f"{'Removed Unused Key'.ljust(KEY_LEN)}: {key}")
-    # 按键顺序排序
+    # Sort by key order
     json_data = OrderedDict(
         sorted(
             json_data.items(),
@@ -93,10 +93,10 @@ def update_i18n_json(json_file, standard_keys):
             )
         )
     )
-    # 打印处理后的 JSON 条目数
+    # Prints the number of processed JSON entries
     if len(miss_keys) != 0 or len(diff_keys) != 0:
         print(f"{'Total Keys (After)'.ljust(KEY_LEN)}: {len(json_data)}")
-    # 识别有待翻译的键
+    # Identify keys to be translated
     num_miss_translation = 0
     duplicate_items = {}
     for key, value in json_data.items():
@@ -108,7 +108,7 @@ def update_i18n_json(json_file, standard_keys):
             duplicate_items[value].append(key)
         else:
             duplicate_items[value] = [key]
-    # 打印是否有重复的值
+    # Prints whether there are duplicate values
     for value, keys in duplicate_items.items():
         if len(keys) > 1:
             print("\n".join([f"\033[31m{'[Failed] Duplicate Value'.ljust(KEY_LEN)}: {key} -> {value}\033[0m" for key in keys]))
@@ -117,7 +117,7 @@ def update_i18n_json(json_file, standard_keys):
         print(f"\033[31m{'[Failed] Missing Translation'.ljust(KEY_LEN)}: {num_miss_translation}\033[0m")
     else:
         print(f"\033[32m[Passed] All Keys Translated\033[0m")
-    # 将处理后的结果写入 JSON 文件
+    # Write the processed results to a JSON file
     with open(json_file, "w", encoding="utf-8") as f:
         json.dump(json_data, f, ensure_ascii=False, indent=4, sort_keys=SORT_KEYS)
         f.write("\n")
